@@ -9,6 +9,9 @@ reload(rigModLeg)
 
 class buildRigSteps(build.buildRigSteps):
 
+    def __init__(self, asset_name='leopard'):
+        super(buildRigSteps, self).__init__(asset_name)
+
     def create(self):
         self.modules['rightLeg'] = rigModLeg.quadLegIKFK('R')
         self.modules['leftLeg'] = rigModLeg.quadLegIKFK('L')

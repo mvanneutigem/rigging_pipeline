@@ -2,17 +2,20 @@
 #created 9-6-2018
 
 from maya import cmds
+from loadSaveIO import guideIO
+reload(guideIO)
 
 class buildRigSteps(object):
     '''
     make sure to call this class create and build methods at 
     the end when overriding them in your child class.
     '''
-    def __init__(self):
+    def __init__(self, asset_name):
         '''
         '''
         cmds.file(new=True, force=True)
         self.modules = {}
+        self.asset_name = asset_name
 
     def create(self):
         ''' register modules here.
@@ -23,6 +26,7 @@ class buildRigSteps(object):
     def postcreate(self):
         ''' load guide positions
         '''
+        guideIO.loadGuides(self.asset_name)
         pass
 
     def build(self):
@@ -53,8 +57,8 @@ class buildRigSteps(object):
         ''' run all necessary methods to build rig
         '''
         self.create()
-        error()
         self.postcreate()
+        error()
 
         self.build()
         self.postbuild()

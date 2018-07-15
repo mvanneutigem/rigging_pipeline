@@ -22,25 +22,51 @@ class quadLegIKFK(rigModBase.baseModule):
             self.guides[name] = rigComUtils.createRigGuide(name, self.side)
 
     def build(self):
-        ''' build joints/ctls
+        ''' build joints/ctls setup
         '''
-        #create joints
+        #create joints and controls
         for chain in self.chains:
             self.joints[chain] = {}
             for name in self.names:
                 joint = cmds.joint('%s_%s_%s_Jnt'%(self.side, name, chain))
                 cmds.delete(cmds.parentConstraint(joint, self.guides[name]))
-                self.joints[chain][name] = blend
+                self.joints[chain][name] = joint
+
+                control = cmds.circle(nr=(1,0,0), c=(0, 0, 0), r=1.5, n='%s_%s_%s_Ctl' %(self.side, name, chain))
+                cmds.delete(cmds.parentConstraint(control, self.guides[name]))
+                self.controls[chain][name] = control
+
+                #create FK setup
+                if chain == 'Fk':
+                    cmds.parentConstraint(joint, control)
 
         #create IK setup
+        kneeHandle = cmds.ikHandle(startJoint = self.joints['Ik']['Hip'],
+                      endJoint = self.joints['Ik']['Ankle'],
+                      solver = "ikRPsolver")
+        ankleHandle = cmds.ikHandle(startJoint = self.joints['Ik']['Knee'],
+                      endJoint = self.joints['Ik']['FootBall'],
+                      solver = "ikRPsolver")
+        footBallHandle = cmds.ikHandle(startJoint = self.joints['Ik']['Ankle'],
+                      endJoint = self.joints['Ik']['FootBall'],
+                      solver = "ikSCsolver ")
+        cmds.poleVectorConstraint( self.controls['Ik']['Knee'], kneeHandle )
+        cmds.poleVectorConstraint( self.controls['Ik']['Ankle'], ankleHandle )
 
+        cmds.parentConstraint(kneeHandle, self.controls['Ik']['FootBall'])
+        cmds.parentConstraint(ankleHandle, self.controls['Ik']['FootBall'])
+        cmds.parentConstraint(footBallHandle, self.controls['Ik']['FootBall'])
 
-        #create FK setup
+        hipGrp = cmds.group(self.joints['Ik']['Hip'], n=self.joints['Ik']['Hip'].replace('_Jnt','_Grp'))
+        cmds.parentConstraint(hipGrp, self.controls['Ik']['Hip'])
+
+        #create Blend setup
 
 
     def getBottom(self):
         ''' return bottom controller of this module
         '''
+        #can also be used for pickwalking
         return self.controls['footBall']
 
     def getTop(self):

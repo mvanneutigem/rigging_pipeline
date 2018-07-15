@@ -58,7 +58,6 @@ class buildRigSteps(object):
         '''
         self.create()
         self.postcreate()
-        error()
 
         self.build()
         self.postbuild()

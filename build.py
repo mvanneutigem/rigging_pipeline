@@ -3,7 +3,7 @@
 
 from maya import cmds
 from loadSaveIO import guideIO
-reload(guideIO)
+from loadSaveIO import fileIO
 
 class buildRigSteps(object):
     '''
@@ -16,6 +16,7 @@ class buildRigSteps(object):
         cmds.file(new=True, force=True)
         self.modules = {}
         self.asset_name = asset_name
+        fileIO.loadModel(self.asset_name)
 
     def create(self):
         ''' register modules here.

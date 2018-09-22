@@ -28,8 +28,8 @@ class quadLegIKFK(rigModBase.baseModule):
         for chain in self.chains:
             self.joints[chain] = {}
             for i in range(0, self.nrElements):
-                joint = cmds.joint('%s_Spine%s_%s_Jnt'%(self.side, i, chain))
-                cmds.delete(cmds.parentConstraint(joint, self.guides[name]))
+                joint = cmds.joint(n = '%s_Spine%s_%s_Jnt'%(self.side, i, chain))
+                cmds.delete(cmds.parentConstraint(self.guides[name], joint))
                 self.joints[chain][name] = joint
 
         #create IK Spline setup

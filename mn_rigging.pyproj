@@ -29,6 +29,7 @@
     <Compile Include="commons\__init__.py" />
     <Compile Include="loadSaveIO\guideIO.py" />
     <Compile Include="loadSaveIO\__init__.py" />
+    <Compile Include="modules\rigModBase.py" />
     <Compile Include="modules\rigModLeg.py" />
     <Compile Include="modules\rigModSpine.py" />
     <Compile Include="modules\rigModTail.py" />

@@ -7,11 +7,12 @@ from maya import cmds
 def loadModel(asset_name):
     '''load guide trnasforms from file if exists
     '''
-    fileLoc = __file__
-    basePath = fileLoc.split('fileIO')[0]
-    fullPath = os.path.join(basePath, asset_name, 'modeldata', '%s.ma'%asset_name)
 
+    fileLoc = __file__
+    basePath = fileLoc.split('\loadSaveIO')[0]
+    fullPath = os.path.join(basePath, asset_name, 'modeldata', '%s.ma'%asset_name)
+    
     try:
         cmds.file(fullPath, i=True)
     except:
-        print 'no guides save file found in %s'%fullPath
+        print 'no model file found in %s'%fullPath

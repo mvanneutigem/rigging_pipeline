@@ -4,6 +4,8 @@
 from maya import cmds
 from loadSaveIO import guideIO
 from loadSaveIO import fileIO
+reload(fileIO)
+reload(guideIO)
 
 class buildRigSteps(object):
     '''
@@ -19,7 +21,7 @@ class buildRigSteps(object):
         fileIO.loadModel(self.asset_name)
 
     def create(self):
-        ''' register modules here.
+        ''' register modules, create guides
         '''
         for mod in self.modules.itervalues():
             mod.create()

@@ -43,4 +43,5 @@ class baseModule(object):
     def connect(self):
         '''connect to other module
         '''
-        cmds.parentConstraint(self.getTop(), self.parent.getBottom())
+        if self.parent:
+            cmds.parentConstraint(self.getTop(), self.parent.getBottom())

@@ -1,2 +1,9 @@
-.ma
-.mb
+# ignore all these
+*.log
+*.ma
+*.mb
+*.pyc
+*.project
+*.pydevproject
+*.sln
+*.pyproj

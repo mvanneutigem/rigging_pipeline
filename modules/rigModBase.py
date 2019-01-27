@@ -1,5 +1,7 @@
 #rig base module
 #created 9-6-2018
+from commons import rigComUtils
+reload(rigComUtils)
 
 from maya import cmds
 
@@ -17,8 +19,9 @@ class baseModule(object):
     def create(self):
         ''' create guides
         '''
-        pass
-
+        for name in self.names:
+            self.guides[name] = rigComUtils.createRigGuide(name, self.side)
+            
     def build(self):
         ''' build joints/ctls
         '''

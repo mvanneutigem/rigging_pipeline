@@ -3,22 +3,24 @@
 from modules import rigModBase
 from commons import rigComUtils
 reload(rigComUtils)
-reload(rigModBase)
+# reload(rigModBase)
 
-class quadLegIKFK(rigModBase.baseModule):
+class spineIK(rigModBase.baseModule):
 
     def __init__(self, side = 'C', nrElements = 10):
         ''' setup
         '''
-        super(quadLegIKFK, self).__init__(side)
-
-        self.chains = ['Ik', 'Fk', 'Blend']
+        super(spineIK, self).__init__(side)
+        
+        self.moduleName = 'Spine'
+        self.chains = ['Ik']
         self.nrElements = nrElements
         
     def create(self):
         ''' create guides
         '''
-        for name in self.names:
+        for i in range(self.nrElements):
+            name = '%s%s'%(self.moduleName, i)
             self.guides[name] = rigComUtils.createRigGuide(name, self.side)
 
     def build(self):
@@ -28,21 +30,24 @@ class quadLegIKFK(rigModBase.baseModule):
         for chain in self.chains:
             self.joints[chain] = {}
             for i in range(0, self.nrElements):
-                joint = cmds.joint(n = '%s_Spine%s_%s_Jnt'%(self.side, i, chain))
+                joint = cmds.joint(n = '%s_%s%s_%s_Jnt'%(self.side, self.moduleName, i, chain))
                 cmds.delete(cmds.parentConstraint(self.guides[name], joint))
                 self.joints[chain][name] = joint
 
         #create IK Spline setup
+        ikGrp = self._setupIkGrp()
 
-        #create FK setup
-
-
+    def _setupIkGrp(self):
+        '''Set up Ik Grp
+        '''
+        return None
+    
     def getBottom(self):
         ''' return bottom controller of this module
         '''
-        return self.controls['footBall']
+        return self.controls[-1]
 
     def getTop(self):
         ''' return top controller of this module
         '''
-        return self.controls['hip']
+        return self.controls[0]

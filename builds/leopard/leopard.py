@@ -3,9 +3,11 @@
 
 import build
 from modules import rigModLeg
+from modules import rigModArm
 
 reload(build)
 reload(rigModLeg)
+reload(rigModArm)
 
 class buildRigSteps(build.buildRigSteps):
 
@@ -16,4 +18,7 @@ class buildRigSteps(build.buildRigSteps):
         self.modules['rightLeg'] = rigModLeg.quadLegIKFK('R')
         self.modules['leftLeg'] = rigModLeg.quadLegIKFK('L')
 
+        self.modules['rightArm'] = rigModArm.armIKFK('R')
+        self.modules['leftArm'] = rigModArm.armIKFK('L')
+        
         super(buildRigSteps, self).create()

@@ -2,8 +2,7 @@
 #created 9-6-2018
 
 import build
-from modules import rigModLeg
-from modules import rigModArm
+from modules import rigModLeg, rigModArm, rigModSpine
 
 reload(build)
 reload(rigModLeg)
@@ -20,5 +19,7 @@ class buildRigSteps(build.buildRigSteps):
 
         self.modules['rightArm'] = rigModArm.armIKFK('R')
         self.modules['leftArm'] = rigModArm.armIKFK('L')
+        
+        self.modules['spine'] = rigModSpine.spineIK(nrElements=19)
         
         super(buildRigSteps, self).create()

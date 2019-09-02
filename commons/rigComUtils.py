@@ -4,6 +4,6 @@
 from maya import cmds
 
 def createRigGuide(name, side = 'C'):
-    guideName = cmds.spaceLocator(n='%s_%s_Guide'%(side, name))[0]
-    cmds.setAttr('%s.displayLocalAxis'%guideName,1)
+    guideName = cmds.spaceLocator(n='{0}_{1}_Guide'.format(side, name))[0]
+    cmds.setAttr('{0}.displayLocalAxis'.format(guideName),1)
     return guideName

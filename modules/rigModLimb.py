@@ -24,7 +24,7 @@ class limbIKFK(rigModBase.baseModule):
             self.controls[chain] = {}
             for name in self.names:
                 cmds.select(cl=True)
-                joint = cmds.joint(n = '%s_%s_%s_Jnt'%(self.side, name, chain))
+                joint = cmds.joint(n = '{0}_{1}_{2}_Jnt'.format(self.side, name, chain))
                 cmds.delete(cmds.parentConstraint(self.guides[name], joint))
                 cmds.makeIdentity(joint, apply=True)
                 self.joints[chain][name] = joint
@@ -33,7 +33,7 @@ class limbIKFK(rigModBase.baseModule):
                     #TO DO: control class
                     control = cmds.circle(nr=(1,0,0), 
                                           c=(0, 0, 0), 
-                                          r=3, n='%s_%s_%s_Ctl'%(self.side, name, chain))
+                                          r=3, n='{0}_{1}_{2}_Ctl'.format(self.side, name, chain))
                     cmds.delete(cmds.parentConstraint(self.guides[name], control))
                     cmds.makeIdentity(control, apply=True)
                     self.controls[chain][name] = control[0]
@@ -45,7 +45,7 @@ class limbIKFK(rigModBase.baseModule):
         fkGrp = cmds.group(
             self.joints['Fk'].values(),
             self.controls['Fk'].values(),
-            n='%s_Fk_Grp'%self.side
+            n='{0}_Fk_Grp'.format(self.side)
         )
         for i in range(len(self.controls['Fk'])-1):
             cmds.parent(
@@ -60,12 +60,12 @@ class limbIKFK(rigModBase.baseModule):
             blendGrp,
             ikGrp,
             fkGrp,
-            n='%s_Top_Grp'%self.side
+            n='{0}_Top_Grp'.format(self.side)
             )
         
         cmds.group(
             self.topGrp,
-            n='%s_%s_Module'%(self.side,self.moduleName)
+            n='{0}_{1}_Module'.format(self.side,self.moduleName)
             )
     
     def getBottom(self):
@@ -88,9 +88,10 @@ class limbIKFK(rigModBase.baseModule):
         '''
         #instance ikfk attr
         ikfkAttr = cmds.createNode(
-            'locator', 
-            n='%s_%s_Global_Attr'%(self.side,self.moduleName)
+            'transform', 
+            n='{0}_{1}_Global_Attr'.format(self.side,self.moduleName)
         )
+
         parentNode = cmds.listRelatives(ikfkAttr, p=True)
         cmds.addAttr(
             ikfkAttr, 
@@ -98,12 +99,7 @@ class limbIKFK(rigModBase.baseModule):
             attributeType='enum', 
             enumName='IK:FK'
         )
-        cmds.setAttr('%s.ikFkSwitch'%ikfkAttr, cb=True)
-        cmds.setAttr('%s.visibility'%ikfkAttr, 0)
-        for control in self.controls['Ik'].values():
-            cmds.parent(ikfkAttr, control, add=True, shape=True)
-        for control in self.controls['Fk'].values():
-            cmds.parent(ikfkAttr, control, add=True, shape=True)
+        cmds.setAttr('{0}.ikFkSwitch'.format(ikfkAttr), cb=True)
         
         #create Blend setup
         for name in self.names:
@@ -117,55 +113,63 @@ class limbIKFK(rigModBase.baseModule):
                 self.joints['Blend'][name],
                 w=0
             )[0]
-            cmds.setAttr('%s.ikFkSwitch'%ikfkAttr, 0)
-            cmds.setAttr('%s.visibility'%self.controls['Ik'][name],1)
-            cmds.setAttr('%s.visibility'%self.controls['Fk'][name],0)
+            cmds.setAttr('{0}.ikFkSwitch'.format(ikfkAttr), 0)
+            cmds.setAttr('{0}.visibility'.format(self.controls['Ik'][name]),1)
+            cmds.setAttr('{0}.visibility'.format(self.controls['Fk'][name]),0)
             cmds.setDrivenKeyframe(
-                '%s.visibility'%self.controls['Ik'][name],
-                cd='%s.ikFkSwitch'%ikfkAttr,
+                '{0}.visibility'.format(self.controls['Ik'][name]),
+                cd='{0}.ikFkSwitch'.format(ikfkAttr),
             )
             cmds.setDrivenKeyframe(
-                '%s.visibility'%self.controls['Fk'][name],
-                cd='%s.ikFkSwitch'%ikfkAttr,
+                '{0}.visibility'.format(self.controls['Fk'][name]),
+                cd='{0}.ikFkSwitch'.format(ikfkAttr),
             )
         
             cmds.setDrivenKeyframe(
-                '%s.%s_%s_Ik_JntW0'%(constraint, self.side, name),
-                cd='%s.ikFkSwitch'%ikfkAttr,
+                '{0}.{1}_{2}_Ik_JntW0'.format(constraint, self.side, name),
+                cd='{0}.ikFkSwitch'.format(ikfkAttr),
             )
             cmds.setDrivenKeyframe(
-                '%s.%s_%s_Fk_JntW1'%(constraint, self.side, name),
-                cd='%s.ikFkSwitch'%ikfkAttr,
+                '{0}.{1}_{2}_Fk_JntW1'.format(constraint, self.side, name),
+                cd='{0}.ikFkSwitch'.format(ikfkAttr),
             )
             
             # joint follow
-            cmds.setAttr('%s.ikFkSwitch'%ikfkAttr, 1)
-            cmds.setAttr('%s.%s_%s_Ik_JntW0'%(constraint, self.side, name), 0)
-            cmds.setAttr('%s.%s_%s_Fk_JntW1'%(constraint, self.side, name), 1)
+            cmds.setAttr('{0}.ikFkSwitch'.format(ikfkAttr), 1)
+            cmds.setAttr('{0}.{1}_{2}_Ik_JntW0'.format(constraint, self.side, name), 0)
+            cmds.setAttr('{0}.{1}_{2}_Fk_JntW1'.format(constraint, self.side, name), 1)
             cmds.setDrivenKeyframe(
-                '%s.%s_%s_Ik_JntW0'%(constraint, self.side, name),
-                cd='%s.ikFkSwitch'%ikfkAttr,
+                '{0}.{1}_{2}_Ik_JntW0'.format(constraint, self.side, name),
+                cd='{0}.ikFkSwitch'.format(ikfkAttr),
             )
             cmds.setDrivenKeyframe(
-                '%s.%s_%s_Fk_JntW1'%(constraint, self.side, name),
-                cd='%s.ikFkSwitch'%ikfkAttr,
+                '{0}.{1}_{2}_Fk_JntW1'.format(constraint, self.side, name),
+                cd='{0}.ikFkSwitch'.format(ikfkAttr),
             )
             # controller visibility.
-            cmds.setAttr('%s.visibility'%self.controls['Ik'][name],0)
-            cmds.setAttr('%s.visibility'%self.controls['Fk'][name],1)
+            cmds.setAttr('{0}.visibility'%self.controls['Ik'][name],0)
+            cmds.setAttr('{0}.visibility'%self.controls['Fk'][name],1)
             cmds.setDrivenKeyframe(
-                '%s.visibility'%self.controls['Ik'][name],
-                cd='%s.ikFkSwitch'%ikfkAttr,
+                '{0}.visibility'.format(self.controls['Ik'][name]),
+                cd='{0}.ikFkSwitch'.format(ikfkAttr),
             )
             cmds.setDrivenKeyframe(
-                '%s.visibility'%self.controls['Fk'][name],
-                cd='%s.ikFkSwitch'%ikfkAttr,
+                '{0}.visibility'.format(self.controls['Fk'][name]),
+                cd='{0}.ikFkSwitch'.format(ikfkAttr),
             )
         
-        attrHolder = cmds.rename(parentNode, '%s_%s_Global_AttrHolder'%(self.side, self.moduleName))
+        for control in self.controls['Ik'].values():
+            for axis in 'XYZ':
+                cmds.setAttr('{0}.scale{1}'.format(control, axis), keyable=False, channelBox=False, lock=True)
+        for control in self.controls['Fk'].values():
+            for axis in 'XYZ':
+                cmds.setAttr('{0}.scale{1}'.format(control, axis), keyable=False, channelBox=False, lock=True)
+                cmds.setAttr('{0}.translate{1}'.format(control, axis), keyable=False, channelBox=False, lock=True)
+        
+        attrHolder = cmds.rename(parentNode, '{0}_{0}_Global_AttrHolder'.format(self.side, self.moduleName))
         
         return cmds.group(
             self.joints['Blend'].values(),
             attrHolder,
-            n='%s_Blend_Grp'%self.side
+            n='{0}_Blend_Grp'.format(self.side)
         )

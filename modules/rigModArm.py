@@ -1,4 +1,4 @@
-#rig leg module
+#rig arm module
 #created 9-6-2018
 from modules import rigModLimb
 # reload(rigModLimb)
@@ -26,7 +26,7 @@ class armIKFK(rigModLimb.limbIKFK):
             )
         
         elbowHandle = cmds.ikHandle(
-            n = '%s_%s_ikHandle'%(self.side,self.names[1]),
+            n = '{0}_{1}_ikHandle'.format(self.side,self.names[1]),
             startJoint = self.joints['Ik'][self.names[0]],
             endEffector  = self.joints['Ik'][self.names[2]],
             solver = "ikRPsolver"
@@ -45,6 +45,6 @@ class armIKFK(rigModLimb.limbIKFK):
             elbowHandle,
             self.joints['Ik'][self.names[0]],
             self.controls['Ik'].values(),
-            n='%s_Ik_Grp'%self.side
+            n='{0}_Ik_Grp'.format(self.side)
         )
     

@@ -26,19 +26,19 @@ class quadLegIKFK(rigModLimb.limbIKFK):
             )
         
         kneeHandle = cmds.ikHandle(
-            n = '%s_Knee_ikHandle'%self.side,
+            n = '{0}_Knee_ikHandle'.format(self.side),
             startJoint = self.joints['Ik'][self.names[0]],
             endEffector  = self.joints['Ik'][self.names[2]],
             solver = "ikRPsolver"
         )[0]
         ankleHandle = cmds.ikHandle(
-            n = '%s_Ankle_ikHandle'%self.side,
+            n = '{0}_Ankle_ikHandle'.format(self.side),
             startJoint = self.joints['Ik'][self.names[1]],
             endEffector  = self.joints['Ik'][self.names[3]],
             solver = "ikRPsolver" 
         )[0]
         footBallHandle = cmds.ikHandle(
-            n = '%s_FootBall_ikHandle'%self.side,
+            n = '{0}_FootBall_ikHandle'.format(self.side),
             startJoint = self.joints['Ik'][self.names[2]],
             endEffector  = self.joints['Ik'][self.names[3]],
             solver = "ikSCsolver"
@@ -71,6 +71,6 @@ class quadLegIKFK(rigModLimb.limbIKFK):
             kneeHandle,
             self.joints['Ik']['Hip'],
             self.controls['Ik'].values(),
-            n='%s_Ik_Grp'%self.side
+            n='{0}_Ik_Grp'.format(self.side)
         )
     

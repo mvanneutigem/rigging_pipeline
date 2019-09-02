@@ -1,16 +1,33 @@
 #guide IO module
 #created 9-6-2018
-
+import logging
 import os
+import re
+
 from maya import cmds
+
+LOGGER = logging.getLogger(__name__)
 
 def loadGuides(asset_name):
     '''load guide trnasforms from file if exists
+    
+    Args:
+        asset_name (str): name of the asset to load the guides for.
     '''
     fileLoc = __file__
     basePath = fileLoc.split('loadSaveIO')[0]
-    fullPath = os.path.join(basePath, asset_name, 'rigdata', 'guides.txt')
-
+    
+    files = []
+    folder = os.path.join(basePath, asset_name, 'rigdata')
+    for file in os.listdir(folder):
+        if file.startswith("guides"):
+            files.append(os.path.join(folder, file))
+    
+    def extract_number(f):
+        s = re.findall("\d+$",f)
+        return (int(s[0]) if s else -1,f)
+    
+    fullPath = (max(files,key=extract_number))
     guides = cmds.ls('*_Guide')
 
     try:
@@ -30,20 +47,31 @@ def loadGuides(asset_name):
                                 ws = True,
                                 t = (float(x),float(y),float(z)))
                 except:
-                    print '# WARNING %s was not found'%guide
+                    LOGGER.warn('# WARNING {0} was not found'.format(guide))
     except:
-        print 'no guides save file found in %s'%fullPath
+        LOGGER.warn( '# No guides save file found in {0}'.format(fullPath))
 
 def saveGuides(asset_name):
     '''save guide transforms to file
+    
+    Args:
+        asset_name (str): name of the asset to save the guides for.
     '''
-
     fileLoc = __file__
     basePath = fileLoc.split('loadSaveIO')[0]
     fullPath = os.path.join(basePath, asset_name, 'rigdata', 'guides.txt')
+    i = 0
+    while os.path.exists(fullPath):
+        fullPath = os.path.join(
+            basePath, 
+            asset_name, 
+            'rigdata', 
+            'guidesV{0}.txt'.format(i)
+        )
+        i += 1
 
     guides = cmds.ls('*_Guide')
-    print fullPath
+
     if not os.path.exists(os.path.join(basePath, asset_name, 'rigdata')):
         os.makedirs(os.path.join(basePath, asset_name, 'rigdata'))
 
@@ -57,4 +85,4 @@ def saveGuides(asset_name):
                              q = True,
                              ws = True,
                              t = True)
-            file.write('%s;%s;%s\n'%(guide, pos, rot))
+            file.write('{0};{1};{2}\n'.format(guide, pos, rot))
